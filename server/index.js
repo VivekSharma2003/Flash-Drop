@@ -53,6 +53,9 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
     // Ensure uniqueness (simple retry)
     // In prod, check DB. Here map is small.
 
+    const maxDownloads = req.body.oneTime === 'true' ? 1 : null;
+    const password = req.body.password || null;
+
     const metadata = {
         code,
         filename: req.file.filename,
@@ -60,7 +63,10 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
         mimeType: req.file.mimetype,
         size: req.file.size,
         uploadTime: Date.now(),
-        path: req.file.path
+        path: req.file.path,
+        password,
+        maxDownloads,
+        downloads: 0
     };
 
     fileStore.set(code, metadata);
@@ -82,19 +88,51 @@ app.get('/api/info/:code', (req, res) => {
         filename: metadata.originalName,
         size: metadata.size,
         type: metadata.mimeType,
-        uploadTime: metadata.uploadTime
+        uploadTime: metadata.uploadTime,
+        isProtected: !!metadata.password
     });
 });
 
 app.get('/api/file/:code', (req, res) => {
     const { code } = req.params;
+    const pwd = req.query.pwd; // Simple query param for MVP
     const metadata = fileStore.get(code.toUpperCase());
 
     if (!metadata) {
         return res.status(404).json({ error: 'File not found or expired' });
     }
 
-    res.download(metadata.path, metadata.originalName);
+    // Password Check
+    if (metadata.password && metadata.password !== pwd) {
+        return res.status(403).json({ error: 'Incorrect password' });
+    }
+
+    // Burn After Reading (One-Time Download) Check
+    if (metadata.maxDownloads && metadata.downloads >= metadata.maxDownloads) {
+        // If it was already downloaded (race condition possible but rare in MVP), delete and 410
+        fileStore.delete(code.toUpperCase());
+        try {
+            if (fs.existsSync(metadata.path)) fs.unlinkSync(metadata.path);
+        } catch (e) { }
+        return res.status(410).json({ error: 'File has already been retrieved and destroyed.' });
+    }
+
+    // Increment download count
+    metadata.downloads++;
+
+    // Serve file
+    res.download(metadata.path, metadata.originalName, (err) => {
+        // If it's one-time, delete IMMEDIATELY after download attempt
+        if (metadata.maxDownloads) {
+            fileStore.delete(code.toUpperCase());
+            try {
+                if (fs.existsSync(metadata.path)) fs.unlinkSync(metadata.path);
+                console.log(`Burned file ${code} after download.`);
+            } catch (e) {
+                console.error("Error burning file:", e);
+            }
+        }
+    });
 });
 
 app.listen(PORT, () => {
