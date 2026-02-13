@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { UploadCloud, CheckCircle, Copy, ArrowRight, File as FileIcon } from 'lucide-react';
+import { UploadCloud, CheckCircle, Copy, ArrowRight, File as FileIcon, Settings, Lock, Flame } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
 import { api } from '../api';
 
@@ -10,6 +10,11 @@ export default function UploadPage() {
     const [code, setCode] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isUploading, setIsUploading] = useState(false);
+
+    // Security options
+    const [showOptions, setShowOptions] = useState(false);
+    const [password, setPassword] = useState('');
+    const [oneTime, setOneTime] = useState(false);
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         if (acceptedFiles?.length) {
@@ -29,7 +34,7 @@ export default function UploadPage() {
         setIsUploading(true);
         setError(null);
         try {
-            const data = await api.uploadFile(file, setProgress);
+            const data = await api.uploadFile(file, { password, oneTime }, setProgress);
             setCode(data.code);
         } catch (err) {
             setError(api.getErrorMsg(err));
@@ -128,6 +133,48 @@ export default function UploadPage() {
                                 <button onClick={() => setFile(null)} className="text-red-400 hover:text-red-500 text-sm font-medium">Remove</button>
                             )}
                         </div>
+
+                        {!isUploading && (
+                            <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                                <button
+                                    onClick={() => setShowOptions(!showOptions)}
+                                    className="flex items-center space-x-2 text-sm font-semibold text-gray-700 w-full hover:text-black transition-colors"
+                                >
+                                    <Settings size={16} />
+                                    <span>Security Options</span>
+                                    <span className="ml-auto text-xs text-gray-400">{showOptions ? 'Hide' : 'Show'}</span>
+                                </button>
+
+                                {showOptions && (
+                                    <div className="mt-4 space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
+                                        <div>
+                                            <label className="flex items-center space-x-2 text-sm text-gray-600 mb-1 cursor-pointer">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={oneTime}
+                                                    onChange={(e) => setOneTime(e.target.checked)}
+                                                    className="rounded border-gray-300 text-black focus:ring-black"
+                                                />
+                                                <Flame size={14} className={oneTime ? "text-orange-500" : "text-gray-400"} />
+                                                <span>Burn after reading (Delete after 1 download)</span>
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <div className="relative">
+                                                <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                                                <input
+                                                    type="password"
+                                                    value={password}
+                                                    onChange={(e) => setPassword(e.target.value)}
+                                                    placeholder="Optional password protection"
+                                                    className="w-full pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-black focus:ring-1 focus:ring-black"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
 
                         {isUploading ? (
                             <div className="space-y-2">

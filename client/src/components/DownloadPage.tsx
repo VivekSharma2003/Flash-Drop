@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Download, AlertCircle, File, Clock } from 'lucide-react';
+import { Download, AlertCircle, File, Clock, Lock } from 'lucide-react';
 import { api } from '../api';
 
 export default function DownloadPage() {
@@ -10,6 +10,7 @@ export default function DownloadPage() {
     const [fileInfo, setFileInfo] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
     const [inputCode, setInputCode] = useState(code || '');
+    const [password, setPassword] = useState('');
 
     useEffect(() => {
         if (code) {
@@ -33,8 +34,8 @@ export default function DownloadPage() {
 
     const handleDownload = () => {
         if (!fileInfo) return;
-        // Direct browser download
-        window.location.href = `http://localhost:3000/api/file/${fileInfo.code}`;
+        const pwdParam = password ? `?pwd=${encodeURIComponent(password)}` : '';
+        window.location.href = `http://localhost:3000/api/file/${fileInfo.code}${pwdParam}`;
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -100,12 +101,34 @@ export default function DownloadPage() {
                             <Clock size={16} />
                             <span>Files auto-delete 1 hour after upload</span>
                         </div>
+
+                        {fileInfo.isProtected && (
+                            <div className="mb-6">
+                                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                                    <Lock size={14} className="text-black" />
+                                    Password Required
+                                </label>
+                                <input
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="Enter file password"
+                                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all"
+                                />
+                            </div>
+                        )}
+
                         <button
                             onClick={handleDownload}
-                            className="w-full py-4 bg-black hover:bg-gray-800 text-white rounded-xl font-bold text-lg shadow-lg transition-all active:scale-95 flex items-center justify-center space-x-2"
+                            disabled={fileInfo.isProtected && !password}
+                            className={`w-full py-4 rounded-xl font-bold text-lg shadow-lg transition-all flex items-center justify-center space-x-2
+                                ${fileInfo.isProtected && !password
+                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                    : 'bg-black hover:bg-gray-800 text-white active:scale-95'
+                                }`}
                         >
                             <Download size={20} />
-                            <span>Download Now</span>
+                            <span>{fileInfo.isProtected && !password ? 'Enter Password' : 'Download Now'}</span>
                         </button>
                         <div className="text-center mt-6">
                             <button onClick={() => navigate('/')} className="text-gray-400 hover:text-black text-sm">Cancel</button>
