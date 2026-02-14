@@ -8,9 +8,32 @@ const { nanoid } = require('nanoid'); // Note: nanoid v3 is needed for CJS, or s
 const path = require('path');
 const fs = require('fs');
 const { fileStore, UPLOAD_DIR } = require('./store');
+const nodemailer = require('nodemailer');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Email setup (Mock or Real)
+const transporter = nodemailer.createTransport({
+    // For MVP/Demo, using a stream transport to just log JSON to console
+    // In production, replace with SMTP details from process.env
+    jsonTransport: true
+});
+
+async function sendEmail(to, subject, text) {
+    if (!to) return;
+    try {
+        const info = await transporter.sendMail({
+            from: '"Flash Drop" <noreply@flashdrop.app>',
+            to,
+            subject,
+            text
+        });
+        console.log(`[EMAIL SENT] To: ${to} | Subject: ${subject}`);
+    } catch (err) {
+        console.error("Failed to send email:", err);
+    }
+}
 
 app.use(cors());
 app.use(express.json());
@@ -55,6 +78,7 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
 
     const maxDownloads = req.body.oneTime === 'true' ? 1 : null;
     const password = req.body.password || null;
+    const email = req.body.email || null;
 
     const metadata = {
         code,
@@ -66,12 +90,19 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
         path: req.file.path,
         password,
         maxDownloads,
-        downloads: 0
+        downloads: 0,
+        email
     };
 
     fileStore.set(code, metadata);
 
     console.log(`File uploaded: ${code} (${metadata.originalName})`);
+
+    // Send upload confirmation
+    if (email) {
+        sendEmail(email, 'File Uploaded - Flash Drop', `Your file "${metadata.originalName}" is ready.\nCode: ${code}\nLink: http://localhost:5173/d/${code}`);
+    }
+
     res.json({ code, expiresAt: Date.now() + 60 * 60 * 1000 });
 });
 
@@ -119,6 +150,11 @@ app.get('/api/file/:code', (req, res) => {
 
     // Increment download count
     metadata.downloads++;
+
+    // Notify uploader
+    if (metadata.email) {
+        sendEmail(metadata.email, 'File Downloaded - Flash Drop', `Someone just downloaded your file "${metadata.originalName}".`);
+    }
 
     // Serve file
     res.download(metadata.path, metadata.originalName, (err) => {
