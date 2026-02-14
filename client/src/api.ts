@@ -3,11 +3,12 @@ import axios from 'axios';
 const API_URL = 'http://localhost:3000/api';
 
 export const api = {
-    uploadFile: async (file: File, options: { password?: string, oneTime?: boolean } = {}, onProgress: (progress: number) => void) => {
+    uploadFile: async (file: File, options: { password?: string, oneTime?: boolean, email?: string } = {}, onProgress: (progress: number) => void) => {
         const formData = new FormData();
         formData.append('file', file);
         if (options.password) formData.append('password', options.password);
         if (options.oneTime) formData.append('oneTime', 'true');
+        if (options.email) formData.append('email', options.email);
 
         const response = await axios.post(`${API_URL}/upload`, formData, {
             onUploadProgress: (progressEvent) => {
