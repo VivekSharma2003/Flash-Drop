@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import UploadPage from './components/UploadPage';
 import DownloadPage from './components/DownloadPage';
+import NotFoundPage from './components/NotFoundPage';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="/" element={<UploadPage />} />
             <Route path="/d/:code" element={<DownloadPage />} />
             <Route path="/d" element={<DownloadPage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </div>
 
