@@ -148,212 +148,228 @@ export default function UploadPage() {
     }
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="max-w-xl mx-auto"
-        >
-            <div className="text-center mb-10">
-                <h1 className="text-5xl font-extrabold mb-4 text-black dark:text-white tracking-tight">Flash Drop</h1>
-                <p className="text-xl text-gray-600 dark:text-gray-400">Ultra-simple file sharing for everyone.</p>
-            </div>
+        <div className="relative min-h-full flex flex-col items-center justify-center py-12">
+            {/* Animated Background Orbs */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-500/20 dark:bg-blue-500/10 rounded-full blur-[120px] -z-10 mix-blend-multiply dark:mix-blend-screen opacity-50 animate-blob" />
+            <div className="absolute top-40 left-1/4 w-[600px] h-[500px] bg-purple-500/20 dark:bg-purple-500/10 rounded-full blur-[120px] -z-10 mix-blend-multiply dark:mix-blend-screen opacity-50 animate-blob animation-delay-2000" />
+            <div className="absolute top-20 right-1/4 w-[500px] h-[400px] bg-pink-500/20 dark:bg-pink-500/10 rounded-full blur-[120px] -z-10 mix-blend-multiply dark:mix-blend-screen opacity-50 animate-blob animation-delay-4000" />
 
-            <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl p-8 rounded-3xl shadow-2xl border border-gray-100/50 dark:border-zinc-800/50 relative transition-colors duration-300 overflow-hidden">
-                {/* Stunning Glassmorphism Background Preview */}
-                {file && file.type.startsWith('image/') && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="absolute inset-0 z-0 pointer-events-none"
-                    >
-                        <img
-                            src={URL.createObjectURL(file)}
-                            className="w-full h-full object-cover opacity-30 dark:opacity-40 blur-2xl scale-125"
-                            alt="bg-preview"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-zinc-900 via-white/50 dark:via-zinc-900/50 to-transparent" />
-                    </motion.div>
-                )}
-                <div className="relative z-10">
-                    {!file ? (
-                        <div
-                            {...getRootProps()}
-                            className={cn(
-                                "border-4 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all duration-300 group relative overflow-hidden",
-                                isDragActive
-                                    ? "border-black dark:border-white bg-gray-50 dark:bg-zinc-800 scale-[1.02]"
-                                    : "border-gray-200 dark:border-zinc-700 hover:border-black dark:hover:border-white hover:bg-gray-50 dark:hover:bg-zinc-800/50"
-                            )}
-                        >
-                            <input {...getInputProps()} />
-                            {isDragActive && (
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    className="absolute inset-0 z-0 bg-gradient-to-tr from-black/5 to-transparent dark:from-white/10 dark:to-transparent pointer-events-none"
-                                />
-                            )}
-                            <div className="flex justify-center mb-6 relative z-10">
-                                <motion.div
-                                    animate={isDragActive ? { y: [0, -10, 0] } : {}}
-                                    transition={{ repeat: Infinity, duration: 2 }}
-                                    className="w-24 h-24 bg-gray-100 dark:bg-zinc-800 rounded-full flex items-center justify-center text-black dark:text-white group-hover:scale-110 transition-transform duration-300 relative"
-                                >
-                                    {isDragActive && (
-                                        <motion.div
-                                            animate={{ scale: [1, 1.5], opacity: [0.5, 0] }}
-                                            transition={{ repeat: Infinity, duration: 1.5 }}
-                                            className="absolute inset-0 rounded-full bg-black dark:bg-white"
-                                        />
-                                    )}
-                                    <UploadCloud size={48} className="relative z-10" />
-                                </motion.div>
-                            </div>
-                            <p className="text-xl font-medium text-gray-900 dark:text-white mb-2">
-                                {isDragActive ? 'Drop it like it\'s hot!' : 'Drag & drop a file here'}
-                            </p>
-                            <p className="text-gray-400">or click to browse</p>
-                            <p className="text-xs text-gray-300 dark:text-zinc-600 mt-6">Max 100MB • Auto-deletes in 1 hour</p>
-                        </div>
-                    ) : (
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="max-w-xl mx-auto w-full relative z-10"
+            >
+                <div className="text-center mb-10">
+                    <h1 className="text-5xl font-extrabold mb-4 text-black dark:text-white tracking-tight">Flash Drop</h1>
+                    <p className="text-xl text-gray-600 dark:text-gray-400">Ultra-simple file sharing for everyone.</p>
+                </div>
+
+                <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl p-8 rounded-3xl shadow-2xl border border-gray-100/50 dark:border-zinc-800/50 relative transition-colors duration-300 overflow-hidden">
+                    {/* Stunning Glassmorphism Background Preview */}
+                    {file && file.type.startsWith('image/') && (
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="space-y-6"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="absolute inset-0 z-0 pointer-events-none"
                         >
-                            <div className="flex items-center space-x-4 bg-gray-50 dark:bg-zinc-800 p-4 rounded-xl border border-gray-200 dark:border-zinc-700">
-                                <div className="bg-white dark:bg-zinc-700 p-3 rounded-lg shadow-sm text-black dark:text-white relative overflow-hidden">
-                                    {file.type.startsWith('image/') ? (
-                                        <img src={URL.createObjectURL(file)} alt="preview" className="w-6 h-6 object-cover" />
-                                    ) : file.type.startsWith('video/') ? (
-                                        <Film size={24} />
-                                    ) : (
-                                        <FileIcon size={24} />
-                                    )}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="font-semibold text-gray-900 dark:text-white truncate">{file.name}</p>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
-                                </div>
-                                {!isUploading && (
-                                    <button onClick={() => setFile(null)} className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 text-red-400 hover:text-red-500 rounded-lg transition-colors">
-                                        <X size={20} />
-                                    </button>
-                                )}
-                            </div>
-
-                            {!isUploading && (
-                                <div className="bg-gray-50 dark:bg-zinc-800 rounded-xl p-4 border border-gray-200 dark:border-zinc-700">
-                                    <button
-                                        onClick={() => setShowOptions(!showOptions)}
-                                        className="flex items-center space-x-2 text-sm font-semibold text-gray-700 dark:text-gray-300 w-full hover:text-black dark:hover:text-white transition-colors"
-                                    >
-                                        <Settings size={16} />
-                                        <span>Security Options</span>
-                                        <span className="ml-auto text-xs text-gray-400">{showOptions ? 'Hide' : 'Show'}</span>
-                                    </button>
-
-                                    {showOptions && (
-                                        <motion.div
-                                            initial={{ height: 0, opacity: 0 }}
-                                            animate={{ height: "auto", opacity: 1 }}
-                                            className="mt-4 space-y-3 overflow-hidden"
-                                        >
-                                            <div>
-                                                <label className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 mb-1 cursor-pointer">
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={oneTime}
-                                                        onChange={(e) => setOneTime(e.target.checked)}
-                                                        className="rounded border-gray-300 dark:border-zinc-600 text-black focus:ring-black bg-white dark:bg-zinc-700"
-                                                    />
-                                                    <Flame size={14} className={oneTime ? "text-orange-500" : "text-gray-400"} />
-                                                    <span>Burn after reading (Delete after 1 download)</span>
-                                                </label>
-                                            </div>
-                                            <div>
-                                                <div className="relative">
-                                                    <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                                                    <input
-                                                        type="password"
-                                                        value={password}
-                                                        onChange={(e) => setPassword(e.target.value)}
-                                                        placeholder="Optional password protection"
-                                                        className="w-full pl-9 pr-4 py-2 bg-white dark:bg-zinc-700 border border-gray-200 dark:border-zinc-600 rounded-lg text-sm focus:outline-none focus:border-black dark:focus:border-white focus:ring-1 focus:ring-black dark:focus:ring-white dark:text-white placeholder:text-gray-400"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <input
-                                                    type="email"
-                                                    value={email}
-                                                    onChange={(e) => setEmail(e.target.value)}
-                                                    placeholder="Notify me via email (optional)"
-                                                    className="w-full px-4 py-2 bg-white dark:bg-zinc-700 border border-gray-200 dark:border-zinc-600 rounded-lg text-sm focus:outline-none focus:border-black dark:focus:border-white focus:ring-1 focus:ring-black dark:focus:ring-white dark:text-white placeholder:text-gray-400"
-                                                />
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                </div>
-                            )}
-
-                            {isUploading ? (
-                                <div className="space-y-2">
-                                    <div className="flex justify-between text-sm font-medium text-gray-600 dark:text-gray-400">
-                                        <span>Uploading...</span>
-                                        <span>{progress}%</span>
-                                    </div>
-                                    <div className="h-3 bg-gray-100 dark:bg-zinc-800 rounded-full overflow-hidden">
-                                        <motion.div
-                                            className="h-full bg-black dark:bg-white"
-                                            initial={{ width: 0 }}
-                                            animate={{ width: `${progress}%` }}
-                                            transition={{ type: "spring", stiffness: 50 }}
-                                        />
-                                    </div>
-                                </div>
-                            ) : (
-                                <button
-                                    onClick={handleUpload}
-                                    className="w-full py-4 bg-black hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black rounded-xl font-bold text-lg shadow-lg active:scale-95 flex items-center justify-center space-x-2 transition-all"
-                                >
-                                    <span>Generate Link</span>
-                                    <ArrowRight size={20} />
-                                </button>
-                            )}
-
-                            {error && <p className="text-center text-red-500 text-sm bg-red-50 dark:bg-red-900/20 p-2 rounded-lg">{error}</p>}
+                            <img
+                                src={URL.createObjectURL(file)}
+                                className="w-full h-full object-cover opacity-30 dark:opacity-40 blur-2xl scale-125"
+                                alt="bg-preview"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-zinc-900 via-white/50 dark:via-zinc-900/50 to-transparent" />
                         </motion.div>
                     )}
-                </div>
-            </div>
-
-            {/* Recent Uploads */}
-            {recentUploads.length > 0 && (
-                <div className="mt-12 animate-in slide-in-from-bottom-5 fade-in duration-500">
-                    <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white flex items-center">
-                        <Clock size={18} className="mr-2" /> Recent Uploads
-                    </h3>
-                    <div className="space-y-3">
-                        {recentUploads.map((upload) => (
-                            <div key={upload.code} className="bg-white dark:bg-zinc-900 p-4 rounded-xl border border-gray-100 dark:border-zinc-800 flex items-center justify-between shadow-sm">
-                                <div className="flex items-center space-x-3 overflow-hidden">
-                                    <div className="bg-gray-100 dark:bg-zinc-800 p-2 rounded-lg">
-                                        <FileIcon size={16} className="text-gray-600 dark:text-gray-400" />
-                                    </div>
-                                    <div className="min-w-0">
-                                        <p className="font-medium text-sm text-gray-900 dark:text-gray-200 truncate">{upload.filename}</p>
-                                        <p className="text-xs text-gray-500">{(upload.size / 1024 / 1024).toFixed(2)} MB • {new Date(upload.timestamp).toLocaleDateString()}</p>
-                                    </div>
+                    <div className="relative z-10">
+                        {!file ? (
+                            <div
+                                {...getRootProps()}
+                                className={cn(
+                                    "border-4 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all duration-300 group relative overflow-hidden",
+                                    isDragActive
+                                        ? "border-black dark:border-white bg-gray-50 dark:bg-zinc-800 scale-[1.02]"
+                                        : "border-gray-200 dark:border-zinc-700 hover:border-black dark:hover:border-white hover:bg-gray-50 dark:hover:bg-zinc-800/50"
+                                )}
+                            >
+                                <input {...getInputProps()} />
+                                {isDragActive && (
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        className="absolute inset-0 z-0 bg-gradient-to-tr from-black/5 to-transparent dark:from-white/10 dark:to-transparent pointer-events-none"
+                                    />
+                                )}
+                                <div className="flex justify-center mb-6 relative z-10">
+                                    <motion.div
+                                        animate={isDragActive ? { y: [0, -10, 0] } : {}}
+                                        transition={{ repeat: Infinity, duration: 2 }}
+                                        className="w-24 h-24 bg-gray-100 dark:bg-zinc-800 rounded-full flex items-center justify-center text-black dark:text-white group-hover:scale-110 transition-transform duration-300 relative"
+                                    >
+                                        {isDragActive && (
+                                            <motion.div
+                                                animate={{ scale: [1, 1.5], opacity: [0.5, 0] }}
+                                                transition={{ repeat: Infinity, duration: 1.5 }}
+                                                className="absolute inset-0 rounded-full bg-black dark:bg-white"
+                                            />
+                                        )}
+                                        <UploadCloud size={48} className="relative z-10" />
+                                    </motion.div>
                                 </div>
-                                <a href={`/d/${upload.code}`} target="_blank" rel="noreferrer" className="text-xs bg-black dark:bg-white text-white dark:text-black px-3 py-1.5 rounded-lg font-medium hover:opacity-90 transition-opacity">
-                                    View
-                                </a>
+                                <p className="text-xl font-medium text-gray-900 dark:text-white mb-2">
+                                    {isDragActive ? 'Drop it like it\'s hot!' : 'Drag & drop a file here'}
+                                </p>
+                                <p className="text-gray-400">or click to browse</p>
+                                <p className="text-xs text-gray-300 dark:text-zinc-600 mt-6">Max 100MB • Auto-deletes in 1 hour</p>
                             </div>
-                        ))}
+                        ) : (
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="space-y-6"
+                            >
+                                <div className="flex items-center space-x-4 bg-gray-50 dark:bg-zinc-800 p-4 rounded-xl border border-gray-200 dark:border-zinc-700">
+                                    <div className="bg-white dark:bg-zinc-700 p-3 rounded-lg shadow-sm text-black dark:text-white relative overflow-hidden">
+                                        {file.type.startsWith('image/') ? (
+                                            <img src={URL.createObjectURL(file)} alt="preview" className="w-6 h-6 object-cover" />
+                                        ) : file.type.startsWith('video/') ? (
+                                            <Film size={24} />
+                                        ) : (
+                                            <FileIcon size={24} />
+                                        )}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="font-semibold text-gray-900 dark:text-white truncate">{file.name}</p>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                                    </div>
+                                    {!isUploading && (
+                                        <button onClick={() => setFile(null)} className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 text-red-400 hover:text-red-500 rounded-lg transition-colors">
+                                            <X size={20} />
+                                        </button>
+                                    )}
+                                </div>
+
+                                {!isUploading && (
+                                    <div className="bg-gray-50 dark:bg-zinc-800 rounded-xl p-4 border border-gray-200 dark:border-zinc-700">
+                                        <button
+                                            onClick={() => setShowOptions(!showOptions)}
+                                            className="flex items-center space-x-2 text-sm font-semibold text-gray-700 dark:text-gray-300 w-full hover:text-black dark:hover:text-white transition-colors"
+                                        >
+                                            <Settings size={16} />
+                                            <span>Security Options</span>
+                                            <span className="ml-auto text-xs text-gray-400">{showOptions ? 'Hide' : 'Show'}</span>
+                                        </button>
+
+                                        {showOptions && (
+                                            <motion.div
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: "auto", opacity: 1 }}
+                                                className="mt-4 space-y-3 overflow-hidden"
+                                            >
+                                                <div>
+                                                    <label className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 mb-1 cursor-pointer">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={oneTime}
+                                                            onChange={(e) => setOneTime(e.target.checked)}
+                                                            className="rounded border-gray-300 dark:border-zinc-600 text-black focus:ring-black bg-white dark:bg-zinc-700"
+                                                        />
+                                                        <Flame size={14} className={oneTime ? "text-orange-500" : "text-gray-400"} />
+                                                        <span>Burn after reading (Delete after 1 download)</span>
+                                                    </label>
+                                                </div>
+                                                <div>
+                                                    <div className="relative">
+                                                        <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                                                        <input
+                                                            type="password"
+                                                            value={password}
+                                                            onChange={(e) => setPassword(e.target.value)}
+                                                            placeholder="Optional password protection"
+                                                            className="w-full pl-9 pr-4 py-2 bg-white dark:bg-zinc-700 border border-gray-200 dark:border-zinc-600 rounded-lg text-sm focus:outline-none focus:border-black dark:focus:border-white focus:ring-1 focus:ring-black dark:focus:ring-white dark:text-white placeholder:text-gray-400"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <input
+                                                        type="email"
+                                                        value={email}
+                                                        onChange={(e) => setEmail(e.target.value)}
+                                                        placeholder="Notify me via email (optional)"
+                                                        className="w-full px-4 py-2 bg-white dark:bg-zinc-700 border border-gray-200 dark:border-zinc-600 rounded-lg text-sm focus:outline-none focus:border-black dark:focus:border-white focus:ring-1 focus:ring-black dark:focus:ring-white dark:text-white placeholder:text-gray-400"
+                                                    />
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </div>
+                                )}
+
+                                {isUploading ? (
+                                    <div className="space-y-2">
+                                        <div className="flex justify-between text-sm font-medium text-gray-600 dark:text-gray-400">
+                                            <span>Uploading...</span>
+                                            <span>{progress}%</span>
+                                        </div>
+                                        <div className="h-3 bg-gray-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+                                            <motion.div
+                                                className="h-full bg-black dark:bg-white"
+                                                initial={{ width: 0 }}
+                                                animate={{ width: `${progress}%` }}
+                                                transition={{ type: "spring", stiffness: 50 }}
+                                            />
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <button
+                                        onClick={handleUpload}
+                                        className="relative w-full py-4 bg-black hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black rounded-xl font-bold text-lg shadow-lg active:scale-95 flex items-center justify-center space-x-2 transition-all overflow-hidden group"
+                                    >
+                                        <span className="relative z-10 flex items-center space-x-2">
+                                            <span>Generate Link</span>
+                                            <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                                        </span>
+                                        <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-transparent via-white/20 dark:via-black/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+                                    </button>
+                                )}
+
+                                {error && <p className="text-center text-red-500 text-sm bg-red-50 dark:bg-red-900/20 p-2 rounded-lg">{error}</p>}
+                            </motion.div>
+                        )}
                     </div>
                 </div>
-            )}
-        </motion.div>
+
+                {/* Recent Uploads */}
+                {recentUploads.length > 0 && (
+                    <div className="mt-12 animate-in slide-in-from-bottom-5 fade-in duration-500">
+                        <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white flex items-center">
+                            <Clock size={18} className="mr-2" /> Recent Uploads
+                        </h3>
+                        <div className="space-y-3">
+                            {recentUploads.map((upload, index) => (
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: index * 0.1 }}
+                                    key={upload.code}
+                                    className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm p-4 rounded-xl border border-gray-100 dark:border-zinc-800 flex items-center justify-between shadow-sm group hover:shadow-md hover:border-gray-200 dark:hover:border-zinc-700 transition-all"
+                                >
+                                    <div className="flex items-center space-x-3 overflow-hidden">
+                                        <div className="bg-gray-100 dark:bg-zinc-800 p-2 rounded-lg group-hover:scale-110 transition-transform">
+                                            <FileIcon size={16} className="text-gray-600 dark:text-gray-400" />
+                                        </div>
+                                        <div className="min-w-0">
+                                            <p className="font-medium text-sm text-gray-900 dark:text-gray-200 truncate">{upload.filename}</p>
+                                            <p className="text-xs text-gray-500">{(upload.size / 1024 / 1024).toFixed(2)} MB • {new Date(upload.timestamp).toLocaleDateString()}</p>
+                                        </div>
+                                    </div>
+                                    <a href={`/d/${upload.code}`} target="_blank" rel="noreferrer" className="text-xs bg-black dark:bg-white text-white dark:text-black px-3 py-1.5 rounded-lg font-medium hover:scale-105 active:scale-95 transition-transform">
+                                        View
+                                    </a>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </motion.div>
+        </div>
     );
 }
