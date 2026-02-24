@@ -120,7 +120,8 @@ app.get('/api/info/:code', (req, res) => {
         size: metadata.size,
         type: metadata.mimeType,
         uploadTime: metadata.uploadTime,
-        isProtected: !!metadata.password
+        isProtected: !!metadata.password,
+        isOneTime: !!metadata.maxDownloads
     });
 });
 
