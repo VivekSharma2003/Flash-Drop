@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import confetti from 'canvas-confetti';
 import { cn } from '../lib/utils';
+import { CountdownTimer } from './CountdownTimer';
 
 type RecentUpload = {
     code: string;
@@ -358,12 +359,17 @@ export default function UploadPage() {
                                         </div>
                                         <div className="min-w-0">
                                             <p className="font-medium text-sm text-gray-900 dark:text-gray-200 truncate">{upload.filename}</p>
-                                            <p className="text-xs text-gray-500">{(upload.size / 1024 / 1024).toFixed(2)} MB • {new Date(upload.timestamp).toLocaleDateString()}</p>
+                                            <p className="text-xs text-gray-500">
+                                                {(upload.size / 1024 / 1024).toFixed(2)} MB • {new Date(upload.timestamp).toLocaleDateString()}
+                                            </p>
                                         </div>
                                     </div>
-                                    <a href={`/d/${upload.code}`} target="_blank" rel="noreferrer" className="text-xs bg-black dark:bg-white text-white dark:text-black px-3 py-1.5 rounded-lg font-medium hover:scale-105 active:scale-95 transition-transform">
-                                        View
-                                    </a>
+                                    <div className="flex items-center gap-3">
+                                        <CountdownTimer uploadTime={upload.timestamp} className="hidden sm:flex" />
+                                        <a href={`/d/${upload.code}`} target="_blank" rel="noreferrer" className="text-xs bg-black dark:bg-white text-white dark:text-black px-3 py-1.5 rounded-lg font-medium hover:scale-105 active:scale-95 transition-transform">
+                                            View
+                                        </a>
+                                    </div>
                                 </motion.div>
                             ))}
                         </div>
